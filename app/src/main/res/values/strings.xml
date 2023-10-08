@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Art Space app</string>
+
+    <string name="salvador_dali">Salvador Dali</string>
+    <string name="desierta_desc">Desierta (1952)</string>
+    <string name="galatea_desc">Galatea (1952)</string>
+
+    <string name="hieronymus_bosch">Hieronymus Bosch</string>
+    <string name="the_creation_of_the_world_desc">The Creation of the World (1495 – 1505)</string>
+    <string name="ascent_of_the_blessed_desc">Ascent of the Blessed (1500 – 1515)</string>
+
+    <string name="previous_button">Previous</string>
+    <string name="next_button">Next</string>
+</resources>
