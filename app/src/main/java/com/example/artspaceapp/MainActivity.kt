@@ -6,8 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,29 +51,42 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ArtSpaceLayout()
+                    ArtSpaceApp()
                 }
             }
         }
     }
 }
 
+
+data class ArtDataDTO(
+    var artistName: Int,
+    var artDescription: Int,
+    var artPhoto: Int
+)
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ArtSpacePreview() {
     ArtSpaceAppTheme {
-        ArtSpaceLayout()
+        ArtSpaceApp()
     }
 }
 
 @Composable
-fun ArtSpaceLayout(modifier: Modifier = Modifier) {
+fun ArtSpaceApp(modifier: Modifier = Modifier) {
     var currentImageStep by remember { mutableStateOf(0) }
+    val artList = listOf(
+        ArtDataDTO(R.string.salvador_dali, R.string.desierta_desc, R.drawable.desertia),
+        ArtDataDTO(R.string.salvador_dali, R.string.galatea_desc, R.drawable.galatea_of_the_spheres),
+        ArtDataDTO(R.string.hieronymus_bosch, R.string.the_creation_of_the_world_desc, R.drawable.the_creation_of_the_world),
+        ArtDataDTO(R.string.hieronymus_bosch, R.string.ascent_of_the_blessed_desc, R.drawable.paradise_ascent_of_the_blessed),
+    )
     fun showPreviousImage() {
-        if (currentImageStep <= 0) currentImageStep = 3 else currentImageStep--
+        if (currentImageStep <= 0) currentImageStep = artList.size - 1 else currentImageStep--
     }
     fun showNextImage() {
-        if (currentImageStep >= 3) currentImageStep = 0 else currentImageStep++
+        if (currentImageStep >= artList.size - 1) currentImageStep = 0 else currentImageStep++
     }
     Column (
         modifier = modifier
@@ -83,7 +94,7 @@ fun ArtSpaceLayout(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Bottom
     ) {
         ArtWorkWall(
-            currentImageStep = currentImageStep,
+            artData = artList[currentImageStep],
             modifier = modifier
         )
         Spacer(modifier = Modifier.height(64.dp))
@@ -129,32 +140,7 @@ fun DisplayController(onPreviousClick: () -> Unit, onNextClick: () -> Unit, modi
 }
         
 @Composable
-fun ArtWorkWall(currentImageStep: Int, modifier: Modifier = Modifier) {
-    var currentArtist: Int = R.string.salvador_dali
-    var currentArtDescription: Int = R.string.desierta_desc
-    var currentArt: Int = R.drawable.desertia
-    when(currentImageStep) {
-        0 -> {
-            currentArtist = R.string.salvador_dali
-            currentArtDescription = R.string.desierta_desc
-            currentArt = R.drawable.desertia
-        }
-        1 -> {
-            currentArtist = R.string.salvador_dali
-            currentArtDescription = R.string.galatea_desc
-            currentArt = R.drawable.galatea_of_the_spheres
-        }
-        2 -> {
-            currentArtist = R.string.hieronymus_bosch
-            currentArtDescription = R.string.the_creation_of_the_world_desc
-            currentArt = R.drawable.the_creation_of_the_world
-        }
-        3 -> {
-            currentArtist = R.string.hieronymus_bosch
-            currentArtDescription = R.string.ascent_of_the_blessed_desc
-            currentArt = R.drawable.paradise_ascent_of_the_blessed
-        }
-    }
+fun ArtWorkWall(artData: ArtDataDTO, modifier: Modifier = Modifier) {
     var showDescription by remember { mutableStateOf(true) }
     Column (
         modifier = modifier
@@ -169,8 +155,8 @@ fun ArtWorkWall(currentImageStep: Int, modifier: Modifier = Modifier) {
             contentAlignment = Alignment.BottomStart,
         ) {
             Image(
-                painter = painterResource(id = currentArt),
-                contentDescription = currentArtDescription.toString(),
+                painter = painterResource(id = artData.artPhoto),
+                contentDescription = artData.artDescription.toString(),
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
                     .height(540.dp)
@@ -179,8 +165,8 @@ fun ArtWorkWall(currentImageStep: Int, modifier: Modifier = Modifier) {
                     .clickable { showDescription = !showDescription }
             )
             ArtWorkDescription(
-                artName =  currentArtDescription,
-                artistName = currentArtist,
+                artName =  artData.artDescription,
+                artistName = artData.artistName,
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(shape = RoundedCornerShape(bottomStartPercent = 5, bottomEndPercent = 5))
